@@ -8,6 +8,10 @@ import cv2
 
 app = Flask(__name__, template_folder='templates')
 
+import os
+port = int(os.environ.get("PORT", 5000))  # Use Codespaces' default if PORT isn't set
+app.run(host="0.0.0.0", port=port)
+
 model = tf.keras.models.load_model("model/model.keras")
 class_names = ['Milk', 'Milk+Oil']
 
