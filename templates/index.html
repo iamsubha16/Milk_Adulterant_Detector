@@ -1,0 +1,104 @@
+"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>imageO</title>
+  <link rel="icon" href="/static/favicon.ico" type="image/png" />
+  <link rel="stylesheet" href="static/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-screen">
+
+  <div class="fixed top-0 left-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm z-10">
+    <header class="max-w-lg mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <img src="/static/android-chrome-512x512.png" alt="ImageO Logo" class="w-8 h-8">
+        <h1 class="text-xl font-bold gradient-text">imageO</h1>
+      </div>
+    </header>
+  </div>
+
+  <main class="pt-16 pb-6 px-4 max-w-lg mx-auto">
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">AI based Milk Adulterant Detector</h2>
+      <p class="text-gray-600 dark:text-gray-400 text-sm">Detects edible oil mixed milk in real-time</p>
+    </div>
+    
+    <section class="mb-6">
+      <div class="camera-frame rounded-lg overflow-hidden shadow-md bg-black relative">
+        <video id="camera" autoplay playsinline class="w-full aspect-video object-cover"></video>
+        <canvas id="canvas" class="hidden absolute top-0 left-0"></canvas>
+      </div>
+      
+      <div class="flex justify-center mt-3 gap-2">
+        <button onclick="switchCamera()" class="flex items-center gap-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 transition-colors">
+          <i class="fas fa-sync-alt text-xs"></i>
+          Switch Camera
+        </button>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 gap-4">
+      <!-- Action Cards -->
+      <div class="card bg-white/90 dark:bg-gray-800/90 rounded-xl p-4 shadow-md border border-gray-200 dark:border-gray-700">        
+        <div class="flex flex-col gap-3">
+          <button onclick="capture()" class="btn bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2">
+            <i class="fas fa-camera"></i>
+            Capture & Predict
+          </button>
+          
+          <div class="relative">
+            <label for="uploadInput" class="btn block bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-3 px-4 rounded-lg text-center cursor-pointer flex items-center justify-center gap-2">
+              <i class="fas fa-upload"></i>
+              Upload & Predict
+            </label>
+            <input type="file" id="uploadInput" accept="image/*" class="hidden">
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Card -->
+      <div class="card bg-white/90 dark:bg-gray-800/90 rounded-xl p-4 shadow-md border border-gray-200 dark:border-gray-700">
+        <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
+          <i class="fas fa-image"></i>
+          Image Preview
+        </h3>
+        <div class="bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 flex items-center justify-center" style="min-height: 200px;">
+          <img id="imagePreview" src="static/Placehonder-image.png" alt="No image captured" class="w-full h-full object-contain max-h-48" />
+        </div>
+      </div>
+
+      <!-- Results Card -->
+      <div id="result" class="card bg-white/90 dark:bg-gray-800/90 rounded-xl p-4 shadow-md border border-gray-200 dark:border-gray-700">
+        <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
+          <i class="fas fa-robot"></i>
+          AI Prediction
+        </h3>
+        <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 flex items-center justify-center border border-gray-200 dark:border-gray-700" style="min-height: 64px;">
+          <p id="predictionText" class="text-lg font-semibold text-center text-indigo-600 dark:text-indigo-400">
+            Waiting for image...
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="max-w-lg mx-auto px-4 py-4 text-center text-xs text-gray-500 dark:text-gray-500">
+    <div class="flex items-center justify-center gap-2 mb-1">
+      <img src="/static/android-chrome-512x512.png" alt="ImageO Logo" class="w-4 h-4">
+      <span class="font-medium">imageO</span>
+    </div>
+    <p>&copy; 2025 Imagine Labs. All rights reserved.</p>
+  </footer>
+
+  <!-- Toast notification -->
+  <div id="toast" class="hidden toast bg-gray-900 text-white dark:bg-white dark:text-gray-900"></div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
