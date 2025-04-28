@@ -113,8 +113,13 @@ async function sendPrediction(base64Image) {
   predictionText.textContent = 'Loading...';
 
   // Reset result styling
-  const resultDiv = document.getElementById('result');
-  resultDiv.classList.remove('border-green-500', 'border-red-500');
+  const resultDiv = document.getElementById('predictionText');
+  resultDiv.classList.remove(
+    'border-green-500', 'border-red-500', 
+    'text-green-600', 'dark:text-green-400', 
+    'text-red-600', 'dark:text-red-400',
+    'text-indigo-600', 'dark:text-indigo-400' // Remove all previous colors
+  );
 
   try {
     const res = await fetch('/predict', {
@@ -127,17 +132,15 @@ async function sendPrediction(base64Image) {
 
     if (data.error) {
       showToast('Prediction error: ' + data.error, false);
-      predictionText.textContent = `Error: ${data.error}`;
+      // predictionText.textContent = `Error: ${data.error}`;
     } else {
       predictionText.innerHTML = `Predicted Class: <strong>${data.predicted_class}</strong><br>Confidence: <strong>${data.confidence}%</strong>`;
 
-      // Update styling based on prediction result
-      if (data.predicted_class.toLowerCase().includes('pure')) {
-        resultDiv.classList.add('border-green-500');
-        predictionText.className = 'text-lg font-semibold text-center text-green-600 dark:text-green-400';
+      // Change the color based on the predicted class
+      if (data.predicted_class === "Milk") {
+        predictionText.classList.add('text-green-600', 'dark:text-green-400');  // Green color for Milk
       } else {
-        resultDiv.classList.add('border-red-500');
-        predictionText.className = 'text-lg font-semibold text-center text-red-600 dark:text-red-400';
+        predictionText.classList.add('text-red-600', 'dark:text-red-400');  // Red color for milk+oil
       }
 
       // Display cropped image
@@ -148,7 +151,7 @@ async function sendPrediction(base64Image) {
       showToast('Prediction complete', true);
     }
   } catch (err) {
-    predictionText.textContent = `Error: ${err.message}`;
+    // predictionText.textContent = `Error: ${err.message}`;
     showToast('Connection error: ' + err.message, false);
   } finally {
     if (captureBtn) captureBtn.disabled = false;
