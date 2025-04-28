@@ -8,11 +8,8 @@ import cv2
 
 app = Flask(__name__, template_folder='templates')
 
-import os
-port = int(os.environ.get("PORT", 5000))  # Use Codespaces' default if PORT isn't set
-app.run(host="0.0.0.0", port=port)
 
-model = tf.keras.models.load_model("model/model.keras")
+model = tf.keras.models.load_model("model/milk_adulterant_detector_model.keras")
 class_names = ['Milk', 'Milk+Oil']
 
 def predict_from_base64(base64_str):
@@ -37,17 +34,26 @@ def predict_from_base64(base64_str):
         cropped_milk = img[y:y+h, x:x+w]
     else:
         print(f"No contour found in. Skipping.")
+        return {"error": "No valid contour found, invalid image."}
 
-    cropped_resized = cv2.resize(img, (256, 256))  # Resize again after cropping
+    cropped_resized = cv2.resize(cropped_milk, (256, 256))  # Resize again after cropping
     img_array = tf.keras.preprocessing.image.img_to_array(cropped_resized)
     img_array = tf.expand_dims(img_array, 0)
 
+    # Perform prediction
     predictions = model.predict(img_array, verbose=0)
     predicted_class = class_names[np.argmax(predictions[0])]
     confidence = float(round(100 * np.max(predictions[0]), 2))
-    print(f"prediction Complete -- predicted_class{predicted_class}, confidence{confidence}")
+    print(f"Prediction Complete -- Predicted_class : {predicted_class}, Confidence : {confidence}")
 
-    return predicted_class, confidence
+    # Encode the cropped image back to Base64
+    cropped_image = Image.fromarray(cropped_resized)
+    buffered = BytesIO()
+    cropped_image.save(buffered, format="JPEG")
+    cropped_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+    cropped_base64 = f"data:image/jpeg;base64,{cropped_base64}"
+
+    return predicted_class, confidence, cropped_base64
 
 
 @app.route('/')
@@ -60,10 +66,17 @@ def predict():
     if not data or 'image' not in data:
         return jsonify({'error': 'No image provided'}), 400
     try:
-        predicted_class, confidence = predict_from_base64(data['image'])
+        predicted_class, confidence, cropped_image = predict_from_base64(data['image'])
         return jsonify({
             'predicted_class': predicted_class,
-            'confidence': confidence
+            'confidence': confidence,
+            'cropped_image': cropped_image
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+
+if __name__ == "__main__":
+    # app.run(debug=True)
+    app.run()
