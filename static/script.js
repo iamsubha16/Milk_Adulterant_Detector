@@ -5,10 +5,13 @@ const captureBtn = document.querySelector('button[onclick="capture()"]');
 const uploadInput = document.getElementById('uploadInput');
 const imagePreview = document.getElementById('imagePreview');
 const startCameraBtn = document.getElementById('startCameraBtn');
+const switchCameraBtn = document.getElementById('switchCameraBtn');
 
 let currentFacingMode = 'environment'; // Default to back camera
 let currentStream = null;
 let isCameraActive = false; // Track if camera is on
+
+switchCameraBtn.disabled = true;
 
 // On/Off function of camera
 async function toggleCamera() {
@@ -23,6 +26,7 @@ async function toggleCamera() {
     video.classList.add('active'); // <-- Fade-in effect
     cameraControlIcon.className = 'fas fa-stop text-xs'; // Change icon to stop
     cameraControlText.textContent = 'Stop Camera';
+    switchCameraBtn.disabled = false; // Enable Switch Camera button
   } else {
     // Stop camera
     // stopCamera();
@@ -34,6 +38,7 @@ async function toggleCamera() {
     video.classList.remove('active'); // <-- Fade-out effect
     cameraControlIcon.className = 'fas fa-play text-xs';
     cameraControlText.textContent = 'Start Camera';
+    switchCameraBtn.disabled = true; // Disable Switch Camera button when camera is stopped
     showToast('Camera stopped', true);
   }
 }
@@ -98,6 +103,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Switch camera between front and back
 function switchCamera() {
+  if (!isCameraActive) return;  // Prevent switching if camera is not active
+  
   const newFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
   startCamera(newFacingMode);
 }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>imageO</title>
-  <link rel="icon" href="{{ url_for('static', filename='android-chrome-512x512.png') }}" type="image/png" />
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" />
   <link rel="stylesheet" href="static/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,8 +47,9 @@
           <span id="cameraControlText">Start Camera</span>
         </button>
 
-        <button onclick="switchCamera()" 
-          class="flex items-center gap-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full border border-indigo-300 dark:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 transition-colors">
+        <button id="switchCameraBtn" onclick="switchCamera()" 
+          class="flex items-center gap-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full border border-indigo-300 dark:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 transition-colors"
+          disabled>
           <i class="fas fa-sync-alt text-xs"></i> <!-- Sync icon for "switch" -->
           Switch Camera
         </button>
