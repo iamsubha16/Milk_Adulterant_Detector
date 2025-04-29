@@ -3,7 +3,7 @@ title: Milk Adulterant Detector
 emoji: 🥛
 colorFrom: blue
 colorTo: green
-sdk: gradio
+sdk: static
 python_version: 3.10
 app_file: app.py
 models:
